@@ -1,0 +1,19 @@
+{
+    "name": "Core",
+    "rootNamespace": "EMullen.Core",
+    "references": [
+        "Unity.InputSystem",
+        "Unity.TextMeshPro",
+        "Bootstrapper",
+        "Samples"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
