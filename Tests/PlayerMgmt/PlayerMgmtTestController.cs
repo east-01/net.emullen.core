@@ -48,10 +48,8 @@ namespace EMullen.Core.Tests
         public string MakeDataReadout(PlayerData data) 
         {
             List<string> dataStrings = new();
-            data.Datas.ForEach(data => dataStrings.Add("Type: " + data.GetType() + "\n" + data.Serialize()));
-            return 
-            "Types: " + string.Join(", ", data.Types) + "\n" +
-            string.Join("\n", dataStrings);
+            data.Datas.ForEach(data => dataStrings.Add("Type: " + data.GetType().Name + "\n  " + data.ToString()));
+            return "Types: " + string.Join(", ", data.TypeNames) + "\n\n" + string.Join("\n", dataStrings);
         }
 
 #region UI Button callbacks

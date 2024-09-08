@@ -7,7 +7,7 @@ namespace EMullen.Core
     /// The uid WILL NOT CHANGE once instantiated, this ensures you can safely reference the
     ///   same PlayerData each time.
     /// </summary>
-    public class IdentifierData : IPlayerData
+    public class IdentifierData : PlayerDataClass
     {
         public string uid { get; private set; } 
         public int? localPlayerIndex { get; private set; }
@@ -24,14 +24,6 @@ namespace EMullen.Core
             this.localPlayerIndex = localPlayerIndex;
         }
 
-        public object Deserialize(string data)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public string Serialize()
-        {
-            return $"uid: {uid} idx: {localPlayerIndex}";
-        }
+        public override string ToString() => $"uid: {uid} idx: {localPlayerIndex}";
     }
 }

@@ -1,6 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using FishNet.Connection;
+using FishNet.Object;
+using FishNet.Object.Synchronizing;
+using FishNet.Transporting;
+using FishNet.Managing;
+using Codice.Client.BaseCommands.BranchExplorer;
 
 namespace EMullen.Core 
 {
@@ -13,9 +19,20 @@ namespace EMullen.Core
         /// <summary>
         /// All tracked PlayerData objects, mapped using their IdentifierData#uid value.
         /// </summary>
-        private readonly Dictionary<string, PlayerData> playerDatas = new();
+        /// TODO: When networked, why don't we just reference the synced version if we need to
+        private Dictionary<string, PlayerData> playerDatas = new();
 
-        public bool IsPlayerRegistered(string uid) => playerDatas.ContainsKey(uid);
+        private Dictionary<string, PlayerData> PlayerDatas { get {
+#if FISHNET
+            Debug.LogWarning("TODO: Check if connected to a server using the NetworkController");      
+            // TODO: Check if connected to a server using the NetworkController
+            return PlayerDataNetworkedRegistry.Instance.PlayerDatas.Value; 
+#else
+            return playerDatas;
+#endif
+        } }
+
+        public bool IsPlayerRegistered(string uid) => PlayerDatas.ContainsKey(uid);
 
         public void RegisterPlayer(PlayerData newData) 
         {
@@ -24,28 +41,28 @@ namespace EMullen.Core
                 return;
             }
             string uid = newData.GetData<IdentifierData>().uid;
-            if(playerDatas.ContainsKey(uid)) {
+            if(PlayerDatas.ContainsKey(uid)) {
                 Debug.LogError("Can't register new PlayerData: The uid provided is already registered with this PlayerDataRegistry.");
                 return;
             }
-            playerDatas.Add(uid, newData);
+            PlayerDatas.Add(uid, newData);
         }
 
         public PlayerData GetPlayerData(string uid) 
         {
-            if(!playerDatas.ContainsKey(uid)) {
+            if(!PlayerDatas.ContainsKey(uid)) {
                 Debug.LogError("Cant get PlayerData, it is not registered with this PlayerDataRegistry.");
                 return null;
             }
-            return playerDatas[uid];
+            return PlayerDatas[uid];
         }
 
         public PlayerData[] GetAllData() 
         {
-            if(playerDatas.Values.Count == 0)
+            if(PlayerDatas.Values.Count == 0)
                 return new PlayerData[0];
 
-            return playerDatas.Values.ToArray();
+            return PlayerDatas.Values.ToArray();
         }
 
     }

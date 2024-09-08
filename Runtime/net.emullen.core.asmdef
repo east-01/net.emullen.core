@@ -5,7 +5,8 @@
         "Unity.InputSystem",
         "Unity.TextMeshPro",
         "Bootstrapper",
-        "Samples"
+        "Samples",
+        "FishNet.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
