@@ -6,6 +6,7 @@ namespace EMullen.Core
     public class BLogChannel : ScriptableObject
     {
         public bool enable;
+        public string logName;
         public int verbosity;
         public Color color;
     }

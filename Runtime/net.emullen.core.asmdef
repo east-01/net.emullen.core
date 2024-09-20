@@ -2,9 +2,10 @@
     "name": "Core",
     "rootNamespace": "EMullen.Core",
     "references": [
+        "UnityEditor",
+        "UnityEditor.Build",
         "Unity.InputSystem",
         "Unity.TextMeshPro",
-        "Bootstrapper",
         "Samples",
         "FishNet.Runtime"
     ],

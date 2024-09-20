@@ -1,9 +1,11 @@
 {
     "name": "Core.Editor",
     "rootNamespace": "EMullen.Core.Editor",
-    "references": ["Core"],
+    "references": [
+        "Core"
+    ],
     "optionalUnityReferences": [],
-    "includePlatforms": [],
+    "includePlatforms": ["Editor"],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace EMullen.Core 
+namespace EMullen.Core.Editor
 {
     public class BetterLoggerWindow : EditorWindow
     {
