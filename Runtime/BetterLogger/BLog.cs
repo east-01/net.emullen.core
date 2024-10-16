@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 namespace EMullen.Core {
@@ -6,6 +8,38 @@ namespace EMullen.Core {
 
         public static readonly string FILE_PATH = Application.streamingAssetsPath + "/BetterLoggerSettings.json";
         public static int MAX_VERBOSITY = 5;
+
+        private static BLogChannel defaultChannel;
+        public static BLogChannel DefaultChannel { get {
+            if(defaultChannel == null) {
+                defaultChannel = ScriptableObject.CreateInstance<BLogChannel>();
+                defaultChannel.color = new Color(0.796f, 0.804f, 0.812f);
+                defaultChannel.logName = "Default";
+                defaultChannel.enable = true;
+                defaultChannel.verbosity = 5;
+                defaultChannel.showPrefix = false;
+            }
+            return defaultChannel;
+        } }
+
+        private static BLogChannel highlightChannel;
+        public static BLogChannel HighlightChannel { get {
+            if(highlightChannel == null) {
+                highlightChannel = ScriptableObject.CreateInstance<BLogChannel>();
+                highlightChannel.color = new Color(1f, 0.843f, 0f);
+                highlightChannel.enable = true;
+                highlightChannel.verbosity = 5;
+                highlightChannel.isBold = true;
+                highlightChannel.showPrefix = false;
+            }
+            return highlightChannel;
+        } }
+
+        /// <summary>
+        /// A list of type names that we're already issued "no BLog channel" warnings for, warnings
+        ///   will no longer be issued for types in this list.
+        /// </summary>
+        private static List<string> warnedTypeNames = new();
 
         /// <summary>
         /// Log a message to unitys Debug#Log. Provide a channel argument to send a log through
@@ -26,27 +60,39 @@ namespace EMullen.Core {
         public static void Log(string message, BLogChannel channel = null, int verbosity = 0) 
         {            
             if(verbosity < 0 || verbosity > MAX_VERBOSITY) {
-                Debug.LogError($"Can't BLog. Provided verbosity is out of range. Provided {verbosity}, range [0, {MAX_VERBOSITY}]");
+                UnityEngine.Debug.LogError($"Can't BLog. Provided verbosity is out of range. Provided {verbosity}, range [0, {MAX_VERBOSITY}]");
             }
+
+            // Create a StackTrace that skips the first frame (this method)
+            StackTrace stackTrace = new(1, true);
+
+            if(channel == null) {
+                channel = DefaultChannel;
+                string typeName = stackTrace.GetFrame(0).GetMethod().GetType().Name;
+                if(!warnedTypeNames.Contains(typeName)) {
+                    UnityEngine.Debug.LogWarning($"No channel provided for log message coming from type \"{typeName}\" either add a BLog channel or ensure it's reference is established.");
+                    warnedTypeNames.Add(typeName);
+                }
+            }
+
+            if(!channel.enable)
+                return;
+
             // If this messages verbosity is greater than the limit, don't print
             if(verbosity > channel.verbosity)
                 return;
 
-            string color = "#c9c9c9";
+            string color = ColorUtility.ToHtmlStringRGB(channel.color);
             string prefix = "";
-            if(channel != null) {
-                if(!channel.enable)
-                    return;
-                color = ColorUtility.ToHtmlStringRGB(channel.color);
+            if(channel.showPrefix)
                 prefix = $"[{channel.logName}@{verbosity}] ";
-            }
 
-            Debug.Log($"<color=#{color}>{prefix}{message}</color>");
+            if(channel.isBold)
+                message = $"<b>{message}</b>";
+
+            UnityEngine.Debug.Log($"<color=#{color}>{prefix}{message}</color>\n{stackTrace}");
         }
 
-        public static void Highlight(string message) 
-        {
-            Debug.Log($"<color=#FFD700><b>{message}</b></color>");        
-        }
+        public static void Highlight(string message) => Log(message, HighlightChannel);
     }
 }
