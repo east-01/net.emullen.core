@@ -6,17 +6,6 @@ using UnityEngine;
 
 namespace EMullen.Core.Editor 
 {
-    // This class is just a marker for the custom property drawer
-    public class SubclassSelectorAttribute : PropertyAttribute
-    {
-        public System.Type BaseType { get; }
-
-        public SubclassSelectorAttribute(System.Type baseType)
-        {
-            BaseType = baseType;
-        }
-    }
-
     [CustomPropertyDrawer(typeof(SubclassSelectorAttribute))]
     public class SubclassSelectorDrawer : PropertyDrawer
     {
