@@ -92,6 +92,12 @@ namespace EMullen.Core {
 
             UnityEngine.Debug.Log($"<color=#{color}>{prefix}{message}</color>\n{stackTrace}");
         }
+        
+        // TODO: Implement string channels
+        public static void Log(string message, string channelID, int verbosity = 0) 
+        {
+            Log(message, (BLogChannel)null, verbosity);
+        }
 
         public static void Highlight(string message) => Log(message, HighlightChannel);
     }
