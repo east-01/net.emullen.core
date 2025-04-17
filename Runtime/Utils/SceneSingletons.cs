@@ -13,6 +13,15 @@ namespace EMullen.Core
         /// TODO: This class could use an advanced OOP pass, specifically relating to arguments.
         /// Why not use a IS3Args struct? this way arguments can be easily added/removed
 
+        public static bool Contains(SceneLookupData lookupData, Type type) => singletons.ContainsKey((lookupData, type)) && singletons[(lookupData, type)].Singleton != null;
+        public static object Get(SceneLookupData lookupData, Type type) 
+        {
+            if(!Contains(lookupData, type))
+                throw new InvalidOperationException($"Can't get scene singleton object for scene \"{lookupData}\" and type \"{type}\". It doesn't exist.");
+
+            return singletons[(lookupData, type)].Singleton;
+        }
+
         public static void SubscribeToSingleton(IS3 subscriber, SceneLookupData lookupData, Type singletonType) 
         {
             if(IsSubscribed(subscriber, lookupData, singletonType)) {
